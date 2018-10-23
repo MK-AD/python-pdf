@@ -1,6 +1,7 @@
 from datetime import datetime
 from PyPDF2 import PdfFileWriter, PdfFileReader
 import io
+import sys
 
 from reportlab.pdfgen import canvas
 from reportlab.pdfgen.canvas import Canvas
@@ -14,18 +15,19 @@ from reportlab.lib.enums import TA_CENTER
 
 from reportlab.platypus import Paragraph, Frame, KeepInFrame
 
-class pdfClass:
+class PdfClass:
 	def __init__(self, 
 				template = 'Dokument2', 
 				logo_url = ImageReader('https://www.google.com/images/srpr/logo11w.png'),
 				customer_name = 'Mr. X'):
-		self.template = template
+		self.template = sys.argv[1]
 		self.logo_url = logo_url
 		self.customer_name = customer_name
 		
 		
 	def todayy(self):
-		today_time = str(datetime.now())[:-7]
+		
+		today_time = str(datetime.now())[:-15]
 	
 		packet = io.BytesIO()
 		# create a new PDF with Reportlab
@@ -37,7 +39,12 @@ class pdfClass:
 		can.drawString(120, 658, "Nymphenburger Str. 5")
 		can.drawString(120, 635, "80335")
 		can.drawString(120, 612, "0123 / 456 789 9")
-		can.drawString(420, 670, today_time)
+		can.drawString(435, 670, today_time)
+		can.drawString(435, 645, "A-123")
+		
+		self.content(can)
+		
+		self.content_items(can)
 		can.save()
 
 		#move to the beginning of the StringIO buffer
@@ -58,5 +65,20 @@ class pdfClass:
 
 		return today_time
 		
-today_time = pdfClass('invoice_template', ImageReader('https://www.google.com/images/srpr/logo11w.png'), 'Michael K')
+	def content(self, can):
+		can.drawString(435, 622, "Hr. Heinrich")
+		
+	def content_items(self, can):
+		items = ["Red-Shirt", "Blue-Shirt", "Green-Shirt"]
+		position_x = 530
+		
+		for item in items:
+			can.drawString(75, position_x, str(items.index(item)))
+			can.drawString(140, position_x, item)
+			position_x = position_x - 23
+			
+		
+			
+		
+today_time = pdfClass('invoice_green', ImageReader('https://www.google.com/images/srpr/logo11w.png'), 'Michael K')
 print(today_time.todayy())
