@@ -10,7 +10,7 @@ from reportlab.pdfgen.canvas import Canvas
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.utils import ImageReader
 from reportlab.lib import pagesizes
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -34,9 +34,7 @@ class PdfClass:
 		packet = io.BytesIO()
 		# create a new PDF with Reportlab
 		can = canvas.Canvas(packet, pagesize=A4)
-		self.width = 0
-		self.height = 0
-		(self.width, self.height) = pagesizes.A4
+
 		
 		can.setFont('Courier', 10, leading=None)
 
@@ -74,6 +72,10 @@ class PdfClass:
 		return
 	
 	def template_invoice(self, can, items = None):
+		width = 0
+		height = 0
+		(width, height) = pagesizes.A4
+	
 		can.drawImage(self.logo_url, 75, 750, width=150, height=50, mask='auto')
 		can.drawString(435, 622, "Hr. Heinrich")
 		can.drawString(120, 681, self.customer_name)
@@ -95,20 +97,21 @@ class PdfClass:
 			position_x = position_x - 23	
 		
 	def template_urkunde(self, can):
-		# Position / Rolle
-		can.setFont('Courier', 30, leading=None)
-		pos_text = "Projektleiter"
-		pos_text_width = stringWidth(pos_text, 'Courier', 30)
+		width = 0
+		height = 0
+		(width, height) = pagesizes.landscape(A4)
 	
-		can.drawCentredString(self.width / 2, 340, pos_text)
+		# Position / Rolle
+		can.setFont('Helvetica', 32, leading=None)
+		can.drawCentredString(width / 2, 340, "Projektleiter")
 	
 		# Empfänger
 		can.setFont('Courier', 20, leading=None)
-		can.drawString(self.width/2.0, 255, "Hr. Heinrich")
+		can.drawCentredString(width/2, 255, "Hr. Heinrich")
 		
 		#Herausgeber
 		can.setFont('Courier', 20, leading=None)
-		can.drawString(self.width/2.0, 195, "Frau Magdeburg")
+		can.drawCentredString(width/2, 195, "Frau Magdeburg")
 		
 		
 		
