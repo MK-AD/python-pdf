@@ -8,6 +8,8 @@ import sys
 from reportlab.pdfgen import canvas
 from reportlab.pdfgen.canvas import Canvas
 
+from reportlab.pdfbase.pdfmetrics import stringWidth
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.lib import pagesizes
@@ -28,17 +30,19 @@ class PdfClass:
 		self.today_time = str(datetime.now())[:-15]
 		
 		
-	def todayy(self):
+	def generate_document(self):
 		packet = io.BytesIO()
 		# create a new PDF with Reportlab
 		can = canvas.Canvas(packet, pagesize=A4)
-		(width, height) = pagesizes.A4
-		can.drawImage(self.logo_url, 75, 750, width=150, height=50, mask='auto')
+		self.width = 0
+		self.height = 0
+		(self.width, self.height) = pagesizes.A4
+		
 		can.setFont('Courier', 10, leading=None)
 
-		self.template_content_chooser(self.template, can)
+		items = ["Red-Shirt", "Blue-Shirt", "Green-Shirt", "Haha", "Test", "Against", "The Machine"]
+		self.template_content_chooser(self.template, can, items)
 		
-		self.content_items(can)
 		
 		can.save()
 
@@ -59,22 +63,18 @@ class PdfClass:
 	
 
 		return self.today_time
-		
-	def content_items(self, can):
-		items = ["Red-Shirt", "Blue-Shirt", "Green-Shirt"]
-		position_x = 530
-		
-		for item in items:
-			can.drawString(75, position_x, str(items.index(item)))
-			can.drawString(140, position_x, item)
-			position_x = position_x - 23
+
 			
-	def template_content_chooser(self, template, can):
+	def template_content_chooser(self, template, can, items):
 		if template in ('invoice_green', 'invoice_blue'):
-			self.template_invoice(can)
+			self.template_invoice(can, items)
+		if template in ('urkunde_stars'):
+			self.template_urkunde(can)
+			
 		return
 	
-	def template_invoice(self, can):
+	def template_invoice(self, can, items = None):
+		can.drawImage(self.logo_url, 75, 750, width=150, height=50, mask='auto')
 		can.drawString(435, 622, "Hr. Heinrich")
 		can.drawString(120, 681, self.customer_name)
 		can.drawString(120, 658, "Nymphenburger Str. 5")
@@ -83,5 +83,34 @@ class PdfClass:
 		can.drawString(435, 670, self.today_time)
 		can.drawString(435, 645, "A-123")	
 		
-today_time = PdfClass('invoice_green', ImageReader('https://www.google.com/images/srpr/logo11w.png'), 'Michael K')
-print(today_time.todayy())
+		if items is not None:
+			self.template_invoice_content_items(can, items)
+		
+	def template_invoice_content_items(self, can, items):
+		position_x = 530
+		
+		for item in items:
+			can.drawString(75, position_x, str(items.index(item)))
+			can.drawString(140, position_x, item)
+			position_x = position_x - 23	
+		
+	def template_urkunde(self, can):
+		# Position / Rolle
+		can.setFont('Courier', 30, leading=None)
+		pos_text = "Projektleiter"
+		pos_text_width = stringWidth(pos_text, 'Courier', 30)
+	
+		can.drawCentredString(self.width / 2, 340, pos_text)
+	
+		# Empfänger
+		can.setFont('Courier', 20, leading=None)
+		can.drawString(self.width/2.0, 255, "Hr. Heinrich")
+		
+		#Herausgeber
+		can.setFont('Courier', 20, leading=None)
+		can.drawString(self.width/2.0, 195, "Frau Magdeburg")
+		
+		
+		
+gendoc = PdfClass('invoice_green', ImageReader('https://www.google.com/images/srpr/logo11w.png'), 'Michael K')
+print(gendoc.generate_document())
