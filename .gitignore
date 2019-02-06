@@ -1,0 +1,5 @@
+/.idea/
+__pycache__/
+.vs
+/src/app/.coverage
+/src/app/htmlcov

@@ -1,0 +1,19 @@
+openapi: "3.0.0"
+info:
+    title:
+    description: |
+      -
+    version: "1.0.0"
+# the domain of the termsOfService:
+servers:
+    - url: /
+      description: Dev
+paths:
+    /health:
+        get:
+            description: |
+                Returns a short message to confirm it's healthy
+            responses:
+                "200":
+                    description: "Request successful"
+

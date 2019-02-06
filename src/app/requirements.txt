@@ -1,0 +1,14 @@
+flask
+flask-restful
+flask_testing
+cherrypy
+requests
+pika
+coverage
+dict2xml
+img2pdf
+zeep
+lxml
+xmltodict
+reportlab
+PyPDF2
